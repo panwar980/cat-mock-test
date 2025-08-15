@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CAT Mock Test – Section Locked (68Q)</title>
+  <style>
+    :root{
+      --bg:#0f172a;          /* slate-900 */
+      --card:#111827;        /* gray-900 */
+      --muted:#94a3b8;       /* slate-400 */
+      --text:#e5e7eb;        /* gray-200 */
+      --primary:#3b82f6;     /* blue-500 */
+      --accent:#22c55e;      /* green-500 */
+      --danger:#ef4444;      /* red-500 */
+      --warning:#f59e0b;     /* amber-500 */
+      --ring:#1f2937;        /* gray-800 */
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#0b1225 0%, #0f172a 100%);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(10px);background:rgba(17,24,39,.65);border-bottom:1px solid var(--ring)}
+    .wrap{max-width:1200px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
+    .brand{font-weight:800;letter-spacing:.3px}
+    .grow{flex:1}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--ring);border-radius:999px;color:var(--muted)}
+    .btn{border:1px solid var(--ring);background:#0b1020;color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;transition:.15s;
+         box-shadow:0 1px 0 #000 inset, 0 0 0 0 rgba(59,130,246,.3)}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(59,130,246,.15)}
+    .btn.primary{background:linear-gradient(180deg,#1d4ed8,#1e40af);border-color:#1e3a8a}
+    .btn.ghost{background:transparent}
+
+    main{max-width:1200px;margin:24px auto;padding:0 18px;display:grid;grid-template-columns:1fr 320px;gap:18px}
+    .card{background:linear-gradient(180deg,#0f172a,#0b1225);border:1px solid var(--ring);border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+    .card .head{padding:18px;border-bottom:1px solid var(--ring)}
+    .card .body{padding:18px}
+
+    .qtext{font-size:18px;margin:8px 0 14px}
+    .opt{display:block;border:1px solid var(--ring);border-radius:12px;padding:12px 12px;margin:10px 0;cursor:pointer;transition:.12s}
+    .opt:hover{border-color:#334155;background:#0b1225}
+    .opt input{margin-right:10px;vertical-align:middle}
+    .opt.selected{border-color:#1e3a8a;background:#0b1225}
+    .opt.correct{border-color:#14532d;background:rgba(34,197,94,.12)}
+    .opt.wrong{border-color:#7f1d1d;background:rgba(239,68,68,.12)}
+
+    .palette{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+    .palbtn{border:1px solid var(--ring);background:#0b1020;color:var(--text);padding:8px 0;border-radius:10px;cursor:pointer;transition:.12s}
+    .palbtn.attempted{background:rgba(34,197,94,.15);border-color:#14532d}
+    .palbtn.marked{background:rgba(245,158,11,.12);border-color:#78350f}
+    .palbtn.active{outline:2px solid var(--primary)}
+
+    .meta{display:flex;flex-wrap:wrap;gap:10px}
+    .badge{font-size:12px;border:1px solid var(--ring);padding:4px 8px;border-radius:999px;color:var(--muted)}
+    .badge.diff-easy{color:#86efac;border-color:#166534}
+    .badge.diff-moderate{color:#fcd34d;border-color:#78350f}
+    .badge.diff-difficult{color:#fda4af;border-color:#7f1d1d}
+
+    .calc{position:fixed;right:18px;bottom:18px;width:280px;background:#0b1020;border:1px solid var(--ring);border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.35);overflow:hidden}
+    .calc h4{margin:0;padding:10px 12px;border-bottom:1px solid var(--ring);display:flex;align-items:center;justify-content:space-between}
+    .calc .display{padding:12px;font:600 20px/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;background:#0a0f1f}
+    .calc .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px}
+    .calc button{padding:10px;border-radius:10px;border:1px solid var(--ring);background:#121939;color:var(--text);cursor:pointer}
+
+    .footer-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .muted{color:var(--muted)}
+
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .tile{padding:16px;border:1px solid var(--ring);border-radius:14px;background:#0b1020}
+
+    @media (max-width: 980px){
+      main{grid-template-columns:1fr}
+      .calc{position:fixed;right:10px;left:10px;bottom:10px;width:auto}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">CAT Mock Test • Section-Locked</div>
+      <div class="chip" id="secName">Section: VARC</div>
+      <div class="chip" id="secTimer">Time Left: 40:00</div>
+      <div class="chip">Marking: +3 / −1</div>
+      <div class="grow"></div>
+      <button class="btn" id="calcToggle">Calculator</button>
+      <button class="btn primary" id="endSection">Submit Section</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" id="qPanel">
+      <div class="head">
+        <div class="meta">
+          <span class="badge" id="qCount">Question 1 / 24</span>
+          <span class="badge" id="qDiff">Difficulty</span>
+          <span class="badge" id="qSection">VARC</span>
+        </div>
+      </div>
+      <div class="body">
+        <div class="qtext" id="qText">—</div>
+        <div id="options"></div>
+        <div class="footer-actions">
+          <button class="btn" id="prev">Prev</button>
+          <button class="btn" id="next">Save & Next</button>
+          <button class="btn ghost" id="clear">Clear</button>
+          <button class="btn" id="mark">Mark for Review</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="head"><strong>Question Palette</strong></div>
+      <div class="body">
+        <div class="palette" id="palette"></div>
+        <div style="margin-top:12px" class="muted">Green = attempted • Amber = marked • Ring = current</div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Analysis Panel -->
+  <section class="card" id="analysis" style="max-width:1200px;margin:0 auto 40px;display:none">
+    <div class="head"><strong>Mock Analysis & Review</strong></div>
+    <div class="body">
+      <div class="summary" id="summaryTiles"></div>
+      <div style="margin-top:16px">
+        <h3 style="margin:8px 0">Section Breakdown</h3>
+        <div id="sectionTable"></div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--ring);margin:18px 0">
+      <div>
+        <h3 style="margin:8px 0">Review Answers</h3>
+        <div id="review"></div>
+      </div>
+      <div style="margin-top:16px" class="footer-actions">
+        <button class="btn" onclick="location.reload()">Restart</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <div class="calc" id="calc" style="display:none">
+    <h4>
+      <span>On‑screen Calculator</span>
+      <button class="btn" id="calcClose" style="padding:6px 10px">✕</button>
+    </h4>
+    <div class="display" id="calcDisplay">0</div>
+    <div class="grid">
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="/">÷</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button data-k="*">×</button>
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="-">−</button>
+      <button data-k="0">0</button><button data-k=".">.</button><button data-k="C">C</button><button data-k="+">+</button>
+      <button data-k="(">(</button><button data-k=")">)</button><button data-k="%">%</button><button data-k="=">=</button>
+    </div>
+  </div>
+
+  <script>
+    // ------------------ Question Bank (68 total: 24 VARC, 22 DILR, 22 QA) ------------------
+    // Structure: {q, options:[..], ans:index, diff:'easy|moderate|difficult'}
+
+    const VARC = [
+      {q:"Choose the option that best completes: 'Despite his ____ exterior, he is genuinely compassionate.'", options:["aloof","gregarious","taciturn","affable"], ans:0, diff:"easy"},
+      {q:"Select the correct usage.", options:["Less people attended the seminar.","Fewer people attended the seminar.","Fewest people attends the seminar.","Lesser people attended seminar."], ans:1, diff:"easy"},
+      {q:"Pick the closest meaning of 'eschew'.", options:["embrace","avoid","improve","assume"], ans:1, diff:"easy"},
+      {q:"Para-jumble (first sentence): P) The plan looked flawless. Q) Yet execution faltered. R) Stakeholders were optimistic. S) Timelines were aggressive.", options:["P","R","S","Q"], ans:1, diff:"moderate"},
+      {q:"Tone of: 'While the proposal is tempting, its hidden costs are worrying.'", options:["jubilant","skeptical","sarcastic","didactic"], ans:1, diff:"moderate"},
+      {q:"Pick the grammatically correct sentence.", options:["Neither the teacher nor the students was late.","Neither the teacher nor the students were late.","Neither the teacher nor the students is late.","Neither teacher nor students was late."], ans:1, diff:"moderate"},
+      {q:"Find the summary: A pilot project worked in a small city, but scaling nationally exposed infrastructure gaps and policy frictions.", options:["National rollouts are always successful.","Scaling revealed systemic constraints absent at pilot scale.","Small cities have better infrastructure than metros.","Policy is irrelevant to scale."], ans:1, diff:"moderate"},
+      {q:"Fill in the blank: 'Her explanation was so ____ that even novices understood.'", options:["opaque","lucid","obtuse","turgid"], ans:1, diff:"easy"},
+      {q:"Find the odd-one-out.", options:["paradox","oxymoron","metaphor","antithesis"], ans:2, diff:"easy"},
+      {q:"Choose the correct idiom usage.", options:["He let the cat out of the pocket.","He let the cat out of the bag.","He left the cat out of the bag.","He gets the cat out from the bag."], ans:1, diff:"easy"},
+      {q:"RC (1): 'Electric vehicles reduce tailpipe emissions but shift demand to cleaner grids.' Main idea?", options:["EVs worsen pollution everywhere.","Emissions are eliminated entirely by EVs.","EVs cut local emissions but need clean electricity for full benefits.","Charging is the only challenge."], ans:2, diff:"moderate"},
+      {q:"RC (2): 'Open-source enables rapid innovation, yet sustainability of maintainers is a concern.' Inference?", options:["Open-source has no costs.","Maintainers require support mechanisms for longevity.","Closed-source is superior.","Innovation is slow in open-source."], ans:1, diff:"moderate"},
+      {q:"Word usage: Choose the correct pair.", options:["discrete / discreet","principle / principal","affect / effect","all are correct"], ans:3, diff:"easy"},
+      {q:"Select the best title for a passage about data privacy trade-offs in personalization.", options:["The Death of Technology","Personalization without Privacy","Balancing Personalization and Privacy","Privacy is Obsolete"], ans:2, diff:"moderate"},
+      {q:"Critical reasoning: If all startups in sector X face high CAC, which weakens?", options:["A firm claims uniquely low CAC due to secret sauce.","CAC will always be high forever.","Sector X is unviable.","No startup can be profitable."], ans:0, diff:"moderate"},
+      {q:"Odd sentence out in theme of 'sustainable cities':", options:["Public transit reduces congestion.","Green roofs lower heat island effects.","Single-use plastics improve hygiene and should increase.","Mixed-use planning cuts commute time."], ans:2, diff:"difficult"},
+      {q:"Para-completion: 'Given network effects, incumbents...'", options:["...always lose to entrants.","...may entrench advantages unless disrupted by regulation or innovation.","...are irrelevant in two-sided markets.","...avoid any scaling benefits."], ans:1, diff:"moderate"},
+      {q:"Find the correct statement.", options:["Data are a singular noun.","Criteria is singular.","Media are plural in formal usage.","Phenomenon is plural."], ans:2, diff:"moderate"},
+      {q:"Choose the best replacement: 'He was asked to advice the team.'", options:["advise","advicee","advising","advised"], ans:0, diff:"easy"},
+      {q:"Reading: The author argues that remote work increases access but risks isolation. The author's stance is:", options:["Unambiguously supportive","Balanced, highlighting benefits and risks","Wholly critical","Indifferent"], ans:1, diff:"easy"},
+      {q:"Vocabulary: Antonym of 'abate'.", options:["wane","ebb","intensify","lessen"], ans:2, diff:"easy"},
+      {q:"Sentence correction: 'Each of the managers have submitted their reports.'", options:["Each of the managers has submitted their reports.","Each of the managers have submitted their reports.","Each of the managers has submitted his or her report.","Each of the managers submitted their report were."], ans:2, diff:"moderate"},
+      {q:"Pick the best inference: A chart shows diminishing returns to ad spend beyond a threshold.", options:["More spend always yields proportional sales.","After a point, additional spend yields smaller incremental gains.","Advertising never works.","Threshold effects are imaginary."], ans:1, diff:"moderate"},
+      {q:"Find the closest meaning of 'inchoate'.", options:["fully formed","nascent","obsolete","meticulous"], ans:1, diff:"difficult"}
+    ];
+
+    const DILR = [
+      {q:"A jar has 5 red, 4 blue, 3 green balls. Two drawn without replacement. P(both red)?", options:["10/132","20/132","5/132","1/12"], ans:0, diff:"difficult"},
+      {q:"Work rates: 6 men finish in 8 days. 4 men take? (same rate)", options:["10","12","14","9"], ans:1, diff:"easy"},
+      {q:"Tables: Seats A–F around circle; A opposite D; B left of A; C not next to D. Who opposite B?", options:["C","E","F","D"], ans:0, diff:"moderate"},
+      {q:"Set (DI): Revenue (₹ in Lakh) across Q1–Q4: 20, 24, 18, 28. Average?", options:["21","22.5","23","24"], ans:2, diff:"easy"},
+      {q:"Venn: 100 students; 60 like Tea, 50 Coffee, 30 both. Neither?", options:["20","10","0","40"], ans:1, diff:"easy"},
+      {q:"Arrangement: Four talks W,X,Y,Z. Y after W; X not first; Z last. Order?", options:["W X Y Z","X W Y Z","W Y X Z","W Z X Y"], ans:2, diff:"moderate"},
+      {q:"Binary choice matrix: 40 choose A, 35 choose B, 15 both. Only A?", options:["25","20","15","10"], ans:0, diff:"easy"},
+      {q:"DI: Sales Mon–Thu: 30, 45, 35, 50. % increase Mon→Thu?", options:["40%","50%","66.7%","25%"], ans:2, diff:"moderate"},
+      {q:"LR: Three couples sit in a row; wives not next to husbands; one seat gap between any couple. Maximum couples?", options:["0","1","2","3"], ans:1, diff:"difficult"},
+      {q:"Scheduling: Tasks A(2h), B(3h), C(1h). One machine, no idle, start 9 AM. Finish time?", options:["3 PM","2 PM","1 PM","12 PM"], ans:1, diff:"easy"},
+      {q:"Ratio table: If boys:girls = 3:2 and total = 150, girls?", options:["60","90","75","50"], ans:0, diff:"easy"},
+      {q:"LR: Four boxes stack; red above blue; green not top; yellow below red; Which can be top?", options:["green","yellow","red","blue"], ans:2, diff:"moderate"},
+      {q:"DI: Pie – Dept A 30%, B 25%, C 20%, D 15%, E 10% of 800 employees. Dept C?", options:["120","160","200","100"], ans:0, diff:"easy"},
+      {q:"Games: If each wins once in a round-robin of 3 teams, total matches?", options:["2","3","4","6"], ans:1, diff:"easy"},
+      {q:"Grid: A moves 3 right, 4 up from origin; distance from origin?", options:["5","7","25","1"], ans:0, diff:"easy"},
+      {q:"LR: Statements – Some A are B. All B are C. Conclusion: Some A are C?", options:["True","False","Cannot be determined","Sometimes true"], ans:0, diff:"moderate"},
+      {q:"DI: Mean of 12 numbers is 15. If one number 27 is removed, new mean?", options:["14","13.5","15","16"], ans:1, diff:"moderate"},
+      {q:"Arrangement: Five books; Math left of Physics; Chem right of Bio; Eng at one end. Which must hold?", options:["Eng leftmost","Math not rightmost","Chem not left of Bio","Physics next to Eng"], ans:2, diff:"difficult"},
+      {q:"Set: 4 workers A,B,C,D. A twice as fast as B; C=D; Together finish in 6 days. If B alone takes 24 days, how many days for A alone?", options:["12","8","6","4"], ans:3, diff:"moderate"},
+      {q:"Network flow-lite: If path capacities are 3 and 4 in parallel, max flow?", options:["3","4","7","12"], ans:2, diff:"easy"},
+      {q:"Coding pattern: If A=1, Z=26; SUM =?", options:["58","54","52","64"], ans:1, diff:"easy"},
+      {q:"Probability: A fair die rolled twice. P(sum=7)?", options:["1/6","1/9","1/12","5/36"], ans:0, diff:"easy"}
+    ];
+
+    const QA = [
+      {q:"If x + 1/x = 5, find x^2 + 1/x^2.", options:["23","21","25","17"], ans:0, diff:"easy"},
+      {q:"Roots of x^2 − 7x + 12 = 0.", options:["3,4","−3,−4","2,6","1,12"], ans:0, diff:"easy"},
+      {q:"Rectangle area 192, diagonal 20. Perimeter?", options:["52","56","60","64"], ans:2, diff:"difficult"},
+      {q:"Simple interest on ₹800 for 2 years is ₹128. Rate r?", options:["6%","7%","8%","10%"], ans:2, diff:"moderate"},
+      {q:"AP: Sum of first 20 terms, a1=5, d=3.", options:["650","610","700","620"], ans:1, diff:"moderate"},
+      {q:"GP: First term 3, ratio 2, S5?", options:["93","96","99","108"], ans:0, diff:"easy"},
+      {q:"Number of divisors of 360.", options:["24","27","32","18"], ans:0, diff:"moderate"},
+      {q:"If a:b=2:3 and b:c=4:5, then a:c?", options:["8:15","4:5","2:5","3:5"], ans:0, diff:"easy"},
+      {q:"Solve: 3x−2y=7 and 2x+3y=13. x?", options:["3","2","4","5"], ans:2, diff:"easy"},
+      {q:"Triangle sides 13,14,15. Area?", options:["84","90","92","96"], ans:0, diff:"difficult"},
+      {q:"Circumference 44π. Radius?", options:["22","44","7","14"], ans:0, diff:"easy"},
+      {q:"If log_2(x)=5, x?", options:["25","32","64","10"], ans:1, diff:"easy"},
+      {q:"Permutation: Arrange word 'BANANA'. Distinct arrangements?", options:["60","120","20","720"], ans:0, diff:"moderate"},
+      {q:"Mixture: 30L 40% alcohol; add water to make 24% alcohol. Final volume?", options:["40 L","45 L","50 L","55 L"], ans:2, diff:"moderate"},
+      {q:"Speed: 120 km at 60 km/h and 120 km at 40 km/h. Avg speed?", options:["48","50","52","54"], ans:1, diff:"moderate"},
+      {q:"Inequality: |2x−3| ≤ 5. Range of x?", options:["[−1,4]","[−1,5]","[−2,4]","[1,5]"], ans:0, diff:"easy"},
+      {q:"Quadratic with vertex at (2,−3) opening upwards: which could be?", options:["y=(x−2)^2−3","y=−(x−2)^2−3","y=(x+2)^2−3","y=(x−2)^2+3"], ans:0, diff:"easy"},
+      {q:"If 12C2 : 12C3 = ?", options:["10:4","5:6","2:5","4:10"], ans:1, diff:"moderate"},
+      {q:"Differentiation: d/dx (x^3).", options:["3x^2","x^2","3x","x^3"], ans:0, diff:"easy"},
+      {q:"Integration: ∫0^1 2x dx.", options:["1","0","2","1/2"], ans:0, diff:"easy"},
+      {q:"If tan θ = 3/4, sec θ = ? (θ acute)", options:["5/4","4/5","5/3","3/5"], ans:0, diff:"easy"},
+      {q:"LCM of 18 and 24.", options:["36","72","48","54"], ans:1, diff:"easy"}
+    ];
+
+    // ------------------ Engine ------------------
+    const SECTIONS = [
+      {key:'VARC', time:40*60, questions:VARC},
+      {key:'DILR', time:40*60, questions:DILR},
+      {key:'QA',   time:40*60, questions:QA}
+    ];
+
+    let secIndex = 0;              // current section index
+    let qIndex = 0;                // current question index in section
+    let timer = null;              // per-section timer
+    let timeLeft = SECTIONS[0].time;
+
+    // Answers: array per section => array of selected option indices or null
+    const answers = SECTIONS.map(s => Array(s.questions.length).fill(null));
+    const marked  = SECTIONS.map(s => Array(s.questions.length).fill(false));
+
+    // Elements
+    const qText = document.getElementById('qText');
+    const optionsDiv = document.getElementById('options');
+    const qCount = document.getElementById('qCount');
+    const qDiff = document.getElementById('qDiff');
+    const qSection = document.getElementById('qSection');
+    const palette = document.getElementById('palette');
+    const secTimer = document.getElementById('secTimer');
+    const secName = document.getElementById('secName');
+
+    function startSection(){
+      const sec = SECTIONS[secIndex];
+      timeLeft = sec.time;
+      updateHeader();
+      buildPalette();
+      renderQuestion();
+      if(timer) clearInterval(timer);
+      timer = setInterval(()=>{
+        if(timeLeft<=0){ submitSection(); return; }
+        timeLeft--; updateTimer();
+      },1000);
+    }
+
+    function updateHeader(){
+      const sec = SECTIONS[secIndex];
+      secName.textContent = `Section: ${sec.key}`;
+      updateTimer();
+    }
+
+    function updateTimer(){
+      const m = String(Math.floor(timeLeft/60)).padStart(2,'0');
+      const s = String(timeLeft%60).padStart(2,'0');
+      secTimer.textContent = `Time Left: ${m}:${s}`;
+    }
+
+    function renderQuestion(){
+      const sec = SECTIONS[secIndex];
+      const q = sec.questions[qIndex];
+      qText.textContent = q.q;
+      qSection.textContent = sec.key;
+      qCount.textContent = `Question ${qIndex+1} / ${sec.questions.length}`;
+      qDiff.textContent = `Difficulty: ${q.diff}`;
+      qDiff.className = 'badge diff-' + q.diff;
+
+      optionsDiv.innerHTML = '';
+      q.options.forEach((opt, i)=>{
+        const id = `opt-${i}`;
+        const label = document.createElement('label');
+        label.className = 'opt' + (answers[secIndex][qIndex]===i ? ' selected' : '');
+        label.innerHTML = `<input type="radio" name="opt" ${answers[secIndex][qIndex]===i?'checked':''}/> ${opt}`;
+        label.addEventListener('click',()=>selectAnswer(i));
+        optionsDiv.appendChild(label);
+      });
+      syncPaletteActive();
+    }
+
+    function selectAnswer(i){
+      answers[secIndex][qIndex] = i;
+      renderQuestion();
+      syncPalette();
+    }
+
+    function clearAnswer(){
+      answers[secIndex][qIndex] = null; renderQuestion(); syncPalette();
+    }
+
+    function toggleMark(){
+      marked[secIndex][qIndex] = !marked[secIndex][qIndex]; syncPalette();
+    }
+
+    // Navigation
+    document.getElementById('prev').onclick = ()=>{ if(qIndex>0){ qIndex--; renderQuestion(); } };
+    document.getElementById('next').onclick = ()=>{ if(qIndex<SECTIONS[secIndex].questions.length-1){ qIndex++; renderQuestion(); } };
+    document.getElementById('clear').onclick = clearAnswer;
+    document.getElementById('mark').onclick = toggleMark;
+
+    // Palette
+    function buildPalette(){
+      const n = SECTIONS[secIndex].questions.length;
+      palette.innerHTML = '';
+      for(let i=0;i<n;i++){
+        const b = document.createElement('button');
+        b.className = 'palbtn';
+        b.textContent = i+1;
+        b.addEventListener('click',()=>{ qIndex=i; renderQuestion(); });
+        palette.appendChild(b);
+      }
+      syncPalette();
+    }
+
+    function syncPalette(){
+      const nodes = palette.children;
+      for(let i=0;i<nodes.length;i++){
+        const b = nodes[i];
+        b.classList.remove('attempted','marked','active');
+        if(answers[secIndex][i]!==null) b.classList.add('attempted');
+        if(marked[secIndex][i]) b.classList.add('marked');
+      }
+      syncPaletteActive();
+    }
+    function syncPaletteActive(){
+      const nodes = palette.children; for(let i=0;i<nodes.length;i++){ nodes[i].classList.toggle('active', i===qIndex); }
+    }
+
+    // Section submission / lock
+    document.getElementById('endSection').onclick = submitSection;
+    function submitSection(){
+      if(timer) clearInterval(timer);
+      // lock this section and move to next or analysis
+      if(secIndex < SECTIONS.length-1){
+        secIndex++; qIndex=0; startSection();
+      } else { finalize(); }
+    }
+
+    // Analysis
+    function finalize(){
+      // hide test UI
+      document.querySelector('main').style.display='none';
+      document.querySelector('header .wrap').style.justifyContent='center';
+      document.getElementById('analysis').style.display='block';
+
+      const perSection = SECTIONS.map((sec, si)=>{
+        let correct=0, wrong=0, unattempted=0; const detail=[];
+        sec.questions.forEach((q, qi)=>{
+          const sel = answers[si][qi];
+          if(sel===null){ unattempted++; detail.push({q, sel, status:'unattempted'}); }
+          else if(sel===q.ans){ correct++; detail.push({q, sel, status:'correct'}); }
+          else { wrong++; detail.push({q, sel, status:'wrong'}); }
+        });
+        const score = correct*3 + wrong*(-1);
+        const attempted = correct+wrong;
+        const accuracy = attempted? Math.round(100*correct/attempted):0;
+        return {name:sec.key, correct, wrong, unattempted, score, total:sec.questions.length, attempted, accuracy, detail};
+      });
+
+      const totals = perSection.reduce((a,s)=>({
+        correct:a.correct+s.correct,
+        wrong:a.wrong+s.wrong,
+        unattempted:a.unattempted+s.unattempted,
+        score:a.score+s.score
+      }),{correct:0,wrong:0,unattempted:0,score:0});
+      totals.attempted = totals.correct+totals.wrong;
+      totals.accuracy = totals.attempted? Math.round(100*totals.correct/totals.attempted):0;
+
+      // Summary tiles
+      const tiles = document.getElementById('summaryTiles');
+      tiles.innerHTML = '';
+      tiles.appendChild(tile('Total Score', totals.score));
+      tiles.appendChild(tile('Accuracy', totals.accuracy+'%'));
+      tiles.appendChild(tile('Attempted', totals.attempted));
+      tiles.appendChild(tile('Correct / Wrong', `${totals.correct} / ${totals.wrong}`));
+
+      // Section table
+      const table = document.getElementById('sectionTable');
+      table.innerHTML = tableHTML(perSection);
+
+      // Review block
+      const review = document.getElementById('review');
+      perSection.forEach(s=>{
+        const h = document.createElement('h4'); h.textContent = s.name; review.appendChild(h);
+        s.detail.forEach((row, idx)=>{
+          const p = document.createElement('div');
+          const klass = row.status==='correct'?'opt correct': row.status==='wrong'?'opt wrong':'opt';
+          p.className = klass; p.style.marginBottom='10px';
+          const selText = row.sel===null? '—' : row.q.options[row.sel];
+          p.innerHTML = `<div style="font-weight:600;margin-bottom:6px">Q${idx+1}. ${row.q.q}</div>
+                         <div class="muted">Your: <b>${selText}</b> • Correct: <b>${row.q.options[row.q.ans]}</b> • <span class="badge diff-${row.q.diff}"> ${row.q.diff}</span></div>`;
+          review.appendChild(p);
+        });
+      });
+    }
+
+    function tile(label, value){
+      const d=document.createElement('div'); d.className='tile';
+      d.innerHTML = `<div class="muted" style="margin-bottom:6px">${label}</div><div style="font-size:26px;font-weight:800">${value}</div>`; return d;
+    }
+
+    function tableHTML(rows){
+      let html = `<div class="card" style="overflow:auto"><table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:10px;border-bottom:1px solid var(--ring)">Section</th>
+          <th style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)">Attempted</th>
+          <th style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)">Correct</th>
+          <th style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)">Wrong</th>
+          <th style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)">Unattempted</th>
+          <th style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)">Accuracy</th>
+          <th style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)">Score</th>
+        </tr></thead><tbody>`;
+      rows.forEach(r=>{
+        html += `<tr>
+          <td style="padding:10px;border-bottom:1px solid var(--ring)"><b>${r.name}</b></td>
+          <td style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)">${r.attempted}</td>
+          <td style="text-align:right;padding:10px;border-bottom:1px solid var(--ring);color:var(--accent)">${r.correct}</td>
+          <td style="text-align:right;padding:10px;border-bottom:1px solid var(--ring);color:var(--danger)">${r.wrong}</td>
+          <td style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)">${r.unattempted}</td>
+          <td style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)">${r.accuracy}%</td>
+          <td style="text-align:right;padding:10px;border-bottom:1px solid var(--ring)"><b>${r.score}</b></td>
+        </tr>`;
+      });
+      html += `</tbody></table></div>`; return html;
+    }
+
+    // --------------- Calculator logic ---------------
+    const calc = document.getElementById('calc');
+    const calcDisplay = document.getElementById('calcDisplay');
+    document.getElementById('calcToggle').onclick = ()=>{ calc.style.display = calc.style.display==='none'?'block':'none'; };
+    document.getElementById('calcClose').onclick = ()=>{ calc.style.display='none'; };
+    calc.addEventListener('click', (e)=>{
+      if(e.target.tagName==='BUTTON' && e.target.dataset.k){
+        const k = e.target.dataset.k;
+        if(k==='C'){ calcDisplay.textContent='0'; return; }
+        if(k==='='){
+          try{ calcDisplay.textContent = Function(`"use strict";return(${calcDisplay.textContent})`)(); }
+          catch{ calcDisplay.textContent = 'Err'; }
+          return;
+        }
+        calcDisplay.textContent = calcDisplay.textContent==='0'? k : calcDisplay.textContent + k;
+      }
+    });
+
+    // Kick off
+    startSection();
+  </script>
+</body>
+</html>

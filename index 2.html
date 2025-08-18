@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAT Mock Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9fafb; margin: 0; padding: 0; }
+    .container { max-width: 900px; margin: auto; padding: 20px; text-align:center; }
+    .start-screen, .quiz-screen, .result-screen { display: none; }
+    button { background: #2563eb; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 18px; }
+    button:hover { background: #1e40af; }
+    .question { font-size: 18px; margin-bottom: 15px; text-align:left; white-space: pre-line; }
+    .options button { display: block; width: 100%; margin: 5px 0; text-align: left; }
+    .correct { background: #22c55e !important; color: white; }
+    .wrong { background: #ef4444 !important; color: white; }
+    .timer { font-size: 20px; margin-bottom: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="startScreen" class="start-screen">
+      <h1>CAT Mock Test</h1>
+      <p>Duration: 120 minutes | Sections: VARC, DILR, Quant</p>
+      <button onclick="startTest()">Start Test</button>
+    </div>
+
+    <div id="quizScreen" class="quiz-screen">
+      <div class="timer" id="timer">Time: 120:00</div>
+      <div id="questionContainer"></div>
+      <div class="options" id="optionsContainer"></div>
+      <button id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+
+    <div id="resultScreen" class="result-screen">
+      <h2>Test Finished</h2>
+      <p id="scoreText"></p>
+    </div>
+  </div>
+
+  <script>
+    const totalTime = 120 * 60;
+    let timeLeft = totalTime;
+    let timerInterval;
+    let currentSection = 'varc';
+    let currentIndex = 0;
+    let score = 0;
+
+    const questions = {
+      varc: [
+        {
+          question: "VARC Demo Q1: Synonym of 'abate'?",
+          options: ["Increase", "Lessen", "Multiply", "Expand"],
+          answer: 1
+        },
+        {
+          question: "VARC Demo Q2: Antonym of 'lucid'?",
+          options: ["Clear", "Obscure", "Bright", "Simple"],
+          answer: 1
+        }
+      ],
+      dilr: [
+        {
+          question: "Directions for questions 1 to 5: These are based on the following data.\nPopulation and area of few states in the country...\n\nQ1. In the year 2001, in which of the following states was the density of population the least?",
+          options: ["Madhya Pradesh", "Andhra Pradesh", "Orissa", "Maharashtra"],
+          answer: 0
+        },
+        {
+          question: "If in 2006, 51% of the rural population in Orissa are males, then what is the number of females in the rural population?",
+          options: ["1,45,68,360", "1,41,00,480", "1,37,00,640", "1,35,47,520"],
+          answer: 3
+        },
+        {
+          question: "What is the percentage increase in the female population in Uttar Pradesh from 2001 to 2006?",
+          options: ["4.5%", "4.2%", "4.3%", "4.0%"],
+          answer: 0
+        },
+        {
+          question: "For which of the following states is the ratio of rural population in 2001 to that in 2006, the least?",
+          options: ["Madhya Pradesh", "Orissa", "Maharashtra", "Andhra Pradesh"],
+          answer: 2
+        },
+        {
+          question: "For the year 2006, in how many of the given states is the male population more than the average male population in that year?",
+          options: ["1", "2", "3", "4"],
+          answer: 2
+        },
+        {
+          question: "Directions for questions 6 to 10: These are based on a table showing % of students who passed exams in 1999-2000.\n\nQ6. What is the total number of students who did not pass in schools B and C together, if 1100 students wrote in each?",
+          options: ["1205", "1210", "1130", "1195"],
+          answer: 1
+        },
+        {
+          question: "If the ratio of students who wrote exams in schools A and F is 8:13, then what is the ratio of students in A and F who did not pass?",
+          options: ["23:16", "21:23", "16:21", "17:21"],
+          answer: 2
+        },
+        {
+          question: "If in school D, the number of students appeared in 1999-2000 is 20% more than previous year and those who passed also 20% more, then ratio of students failed in 1998-1999 to 1999-2000 is?",
+          options: ["5:6", "5:7", "7:6", "4:3"],
+          answer: 0
+        }
+      ],
+      quant: [
+        {
+          question: "Quant Demo Q1: If x + y = 10 and xy = 21, find x² + y².",
+          options: ["37", "58", "79", "100"],
+          answer: 1
+        }
+      ]
+    };
+
+    function startTest() {
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("quizScreen").style.display = "block";
+      startTimer();
+      showQuestion();
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        document.getElementById("timer").innerText = `Time: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        timeLeft--;
+        if (timeLeft < 0) { endTest(); }
+      }, 1000);
+    }
+
+    function showQuestion() {
+      const section = questions[currentSection];
+      if (currentIndex >= section.length) {
+        if (currentSection === 'varc') { currentSection = 'dilr'; }
+        else if (currentSection === 'dilr') { currentSection = 'quant'; }
+        else { endTest(); return; }
+        currentIndex = 0;
+      }
+      const q = questions[currentSection][currentIndex];
+      document.getElementById("questionContainer").innerText = q.question;
+      const optionsDiv = document.getElementById("optionsContainer");
+      optionsDiv.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(i, btn);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected, btn) {
+      const q = questions[currentSection][currentIndex];
+      if (selected === q.answer) { btn.classList.add("correct"); score += 3; }
+      else { btn.classList.add("wrong"); score -= 1; }
+      Array.from(document.querySelectorAll(".options button")).forEach(b => b.disabled = true);
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      showQuestion();
+    }
+
+    function endTest() {
+      clearInterval(timerInterval);
+      document.getElementById("quizScreen").style.display = "none";
+      document.getElementById("resultScreen").style.display = "block";
+      document.getElementById("scoreText").innerText = `Your Score: ${score}`;
+    }
+
+    document.getElementById("startScreen").style.display = "block";
+  </script>
+</body>
+</html>
